@@ -170,6 +170,7 @@ IllimaniAllocationProfilerUI >> initializeNotebook [
 	notebookPresenter := self newNotebook
 		addPageTitle: 'Summary' provider: [ self summaryAndEvaluatorPresenter ];
 		addPageTitle: 'Memory' provider: [ self memoryTablePresenter  ];
+		addPageTitle: 'Context Fingerprint' provider: [ self newSebasTable ];
 		addPageTitle: 'Heatmap' provider: [ self heatMapPresenter ];
 		addPageTitle: 'Allocations per Second Total'
 		provider: [ self allocatedObjectsPerSecondPresenter ];
@@ -290,6 +291,24 @@ IllimaniAllocationProfilerUI >> memoryTablePresenter [
 
 	memoryTablePresenter ifNil: [ self initializeMemoryTablePresenter ].
 	^ memoryTablePresenter
+]
+
+{ #category : #accessing }
+IllimaniAllocationProfilerUI >> newSebasTable [
+
+	^ self newTable
+		  alternateRowsColor;
+		  activateOnDoubleClick;
+		  addColumn: (SpIndexTableColumn new
+				   title: 'Index';
+				   width: 60;
+				   yourself);
+		  addColumn: (SpStringTableColumn new
+				   title: 'Context Fingerprint';
+				   evaluated: [ :each | each contextFingerprintAsString ];
+				   sortFunction: #printString ascending;
+				   yourself);
+		  items: profiler objectAllocations
 ]
 
 { #category : #'accessing - lazy presenters' }

@@ -113,8 +113,8 @@ AllocationInfoDTO >> contextFingerprint [
 AllocationInfoDTO >> contextFingerprintAsString [
 
 	^ String streamContents: [ :stream |
-		  contextFingerprint pairsDo: [ :a :b |
-			  stream << b className << '>>#' << a asString << ' <- ' ] ]
+		  contextFingerprint do: [ :p |
+			  stream << p second className << '>>#' << p first asString << ' <- ' ] ]
 ]
 
 { #category : #accessing }
@@ -139,8 +139,7 @@ AllocationInfoDTO >> setContextFingerprintList: aContext [
 	contextFingerprint := OrderedCollection new.
 	iterator := aContext.
 	1 to: 10 do: [ :index |
-		contextFingerprint add: iterator compiledCode method selector.
-		contextFingerprint add: iterator receiver.
+		contextFingerprint add: iterator compiledCode method selector -> iterator receiver.
 		iterator := iterator sender.
 		iterator ifNil: [ ^ self ] ]
 ]
